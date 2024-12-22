@@ -17,6 +17,7 @@ library("mirt")
 * **R version:** R-4.4.2 for Windows (<https://cran.r-project.org/>)
 * **Rtools version:** Rtools44 for Windows (<https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html>)
 * **RStudio version:** RStudio 2024.12.0+467
+* EGAnet paketine dair ek bilgiler: <https://r-ega.net/>
 
 ```{r ch1, eval=FALSE}
 install.packages(c("eRm", "dplyr", "psychonetrics", "qgraph", "mirt"))
