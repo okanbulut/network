@@ -9,15 +9,25 @@ Psychometric Network Analysis
 - **RStudio version:** RStudio 2024.12.0+467
 - **More information on EGAnet** <https://r-ega.net/>
 
+To download the dataset:
+
+<https://raw.githubusercontent.com/okanbulut/network/master/scr_canada.csv>
+
+To download the R markdown file:
+
+<https://raw.githubusercontent.com/okanbulut/network/master/network.Rmd>
+
+To download the entire repository:
+
+<https://github.com/okanbulut/network/archive/refs/heads/main.zip>
+
 ``` r
-install.packages(c("dplyr", "ggcorrplot", "psych", "bootnet", "plotly",
-                   "psychonetrics", "EGAnet", "networktree"))
+install.packages(c("dplyr", "ggcorrplot", "psych", "bootnet", "psychonetrics", "EGAnet", "networktree"))
 
 library("dplyr")
 library("ggcorrplot")
 library("psych")
 library("bootnet")
-library("plotly")
 library("psychonetrics")
 library("EGAnet")
 library("networktree")
