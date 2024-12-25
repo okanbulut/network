@@ -35,8 +35,11 @@ library("networktree")
 
 # Student Confident in Reading (SCR) in PIRLS 2021
 
+The dataset comes from the PIRLS website
+(<https://pirls2021.org/data/>).
+
 ``` r
-# Students from Alberta, Canada
+# Students from four provinces in Canada
 scr_canada <- read.csv("scr_canada.csv", header = TRUE)
 
 # First 6 rows of the data
@@ -132,8 +135,8 @@ print(network1)
     ## 
     ## === Estimated network ===
     ## Number of nodes: 6 
-    ## Number of non-zero edges: 14 / 15 
-    ## Mean weight: 0.1111013 
+    ## Number of non-zero edges: 15 / 15 
+    ## Mean weight: 0.1088068 
     ## Network stored in network1$graph 
     ##  
     ## Default set used: EBICglasso 
@@ -170,17 +173,17 @@ network2 %>% psychonetrics::fit()
 ```
 
     ##            Measure     Value
-    ##               logl -18423.40
-    ##  unrestricted.logl -18423.40
-    ##      baseline.logl -21018.71
+    ##               logl -84797.63
+    ##  unrestricted.logl -84797.63
+    ##      baseline.logl -97894.55
     ##               nvar         6
     ##               nobs        27
     ##               npar        27
     ##                 df       ~ 0
-    ##          objective      2.56
+    ##          objective      2.59
     ##              chisq       ~ 0
     ##             pvalue         1
-    ##     baseline.chisq   5190.60
+    ##     baseline.chisq  26193.85
     ##      baseline.npar        12
     ##        baseline.df        15
     ##    baseline.pvalue       ~ 0
@@ -196,23 +199,23 @@ network2 %>% psychonetrics::fit()
     ##     rmsea.ci.lower       ~ 0
     ##     rmsea.ci.upper       ~ 0
     ##       rmsea.pvalue       ~ 0
-    ##             aic.ll  36900.81
-    ##            aic.ll2  36901.37
+    ##             aic.ll 169649.26
+    ##            aic.ll2 169649.38
     ##              aic.x       ~ 0
     ##             aic.x2        54
-    ##                bic  37060.24
-    ##               bic2  36974.46
-    ##            ebic.25  37108.62
-    ##             ebic.5  37157.00
-    ##            ebic.75  37195.70
-    ##              ebic1  37253.75
+    ##                bic 169849.87
+    ##               bic2 169764.07
+    ##            ebic.25 169898.25
+    ##             ebic.5 169946.63
+    ##            ebic.75 169985.33
+    ##              ebic1 170043.38
 
 We can prune this model to remove insignificant edges.
 
 ``` r
 network3 <- psychonetrics::ggm(scr, vars = obsvars) %>%
   psychonetrics::runmodel() %>%
-  psychonetrics::prune(adjust = "fdr", alpha = 0.05)
+  psychonetrics::prune(adjust = "BH", alpha = 0.05)
 
 # View the model parameters
 network3 %>% psychonetrics::parameters()
@@ -221,38 +224,40 @@ network3 %>% psychonetrics::parameters()
     ## 
     ##  Parameters for group fullsample
     ##  -  mu  
-    ##     var1 op var2  est    se        p row col par
-    ##  ASBR08A ~1      1.40 0.012 < 0.0001   1   1   1
-    ##  ASBR08B ~1      1.45 0.013 < 0.0001   2   1   2
-    ##  ASBR08C ~1      2.50 0.020 < 0.0001   3   1   3
-    ##  ASBR08D ~1      3.14 0.020 < 0.0001   4   1   4
-    ##  ASBR08E ~1      3.38 0.019 < 0.0001   5   1   5
-    ##  ASBR08F ~1      3.42 0.018 < 0.0001   6   1   6
+    ##     var1 op var2  est     se        p row col par
+    ##  ASBR08A ~1      1.49 0.0063 < 0.0001   1   1   1
+    ##  ASBR08B ~1      1.53 0.0066 < 0.0001   2   1   2
+    ##  ASBR08C ~1      2.58 0.0094 < 0.0001   3   1   3
+    ##  ASBR08D ~1      3.14 0.0091 < 0.0001   4   1   4
+    ##  ASBR08E ~1      3.31 0.0089 < 0.0001   5   1   5
+    ##  ASBR08F ~1      3.40 0.0084 < 0.0001   6   1   6
     ## 
     ##  -  omega (symmetric) 
-    ##     var1 op    var2    est    se        p row col par
-    ##  ASBR08B -- ASBR08A   0.51 0.014 < 0.0001   2   1   7
-    ##  ASBR08C -- ASBR08A  0.044 0.019    0.020   3   1   8
-    ##  ASBR08D -- ASBR08A -0.054 0.017   0.0016   4   1   9
-    ##  ASBR08F -- ASBR08A  -0.15 0.018 < 0.0001   6   1  10
-    ##  ASBR08C -- ASBR08B -0.099 0.019 < 0.0001   3   2  11
-    ##  ASBR08D -- ASBR08B  -0.11 0.017 < 0.0001   4   2  12
-    ##  ASBR08F -- ASBR08B -0.065 0.018  0.00032   6   2  13
-    ##  ASBR08D -- ASBR08C   0.27 0.018 < 0.0001   4   3  14
-    ##  ASBR08E -- ASBR08C  0.083 0.019 < 0.0001   5   3  15
-    ##  ASBR08F -- ASBR08C  0.078 0.019 < 0.0001   6   3  16
-    ##  ASBR08E -- ASBR08D   0.44 0.015 < 0.0001   5   4  17
-    ##  ASBR08F -- ASBR08D   0.17 0.018 < 0.0001   6   4  18
-    ##  ASBR08F -- ASBR08E   0.34 0.017 < 0.0001   6   5  19
+    ##     var1 op    var2    est     se        p row col par
+    ##  ASBR08B -- ASBR08A   0.52 0.0065 < 0.0001   2   1   7
+    ##  ASBR08C -- ASBR08A  0.042 0.0089 < 0.0001   3   1   8
+    ##  ASBR08D -- ASBR08A -0.032 0.0090  0.00030   4   1   9
+    ##  ASBR08E -- ASBR08A -0.037 0.0089 < 0.0001   5   1  10
+    ##  ASBR08F -- ASBR08A  -0.15 0.0088 < 0.0001   6   1  11
+    ##  ASBR08C -- ASBR08B -0.077 0.0089 < 0.0001   3   2  12
+    ##  ASBR08D -- ASBR08B -0.082 0.0089 < 0.0001   4   2  13
+    ##  ASBR08E -- ASBR08B -0.078 0.0089 < 0.0001   5   2  14
+    ##  ASBR08F -- ASBR08B -0.076 0.0089 < 0.0001   6   2  15
+    ##  ASBR08D -- ASBR08C   0.33 0.0080 < 0.0001   4   3  16
+    ##  ASBR08E -- ASBR08C  0.076 0.0089 < 0.0001   5   3  17
+    ##  ASBR08F -- ASBR08C  0.052 0.0089 < 0.0001   6   3  18
+    ##  ASBR08E -- ASBR08D   0.37 0.0077 < 0.0001   5   4  19
+    ##  ASBR08F -- ASBR08D   0.22 0.0085 < 0.0001   6   4  20
+    ##  ASBR08F -- ASBR08E   0.34 0.0079 < 0.0001   6   5  21
     ## 
     ##  -  delta (diagonal) 
     ##     var1  op    var2  est     se        p row col par
-    ##  ASBR08A ~/~ ASBR08A 0.52 0.0070 < 0.0001   1   1  20
-    ##  ASBR08B ~/~ ASBR08B 0.55 0.0074 < 0.0001   2   2  21
-    ##  ASBR08C ~/~ ASBR08C 0.93  0.013 < 0.0001   3   3  22
-    ##  ASBR08D ~/~ ASBR08D 0.72 0.0098 < 0.0001   4   4  23
-    ##  ASBR08E ~/~ ASBR08E 0.69 0.0094 < 0.0001   5   5  24
-    ##  ASBR08F ~/~ ASBR08F 0.74 0.0099 < 0.0001   6   6  25
+    ##  ASBR08A ~/~ ASBR08A 0.54 0.0034 < 0.0001   1   1  22
+    ##  ASBR08B ~/~ ASBR08B 0.56 0.0035 < 0.0001   2   2  23
+    ##  ASBR08C ~/~ ASBR08C 0.90 0.0057 < 0.0001   3   3  24
+    ##  ASBR08D ~/~ ASBR08D 0.71 0.0045 < 0.0001   4   4  25
+    ##  ASBR08E ~/~ ASBR08E 0.71 0.0045 < 0.0001   5   5  26
+    ##  ASBR08F ~/~ ASBR08F 0.70 0.0044 < 0.0001   6   6  27
 
 ``` r
 # Look at the model fit
@@ -260,42 +265,42 @@ network3 %>% psychonetrics::fit()
 ```
 
     ##            Measure     Value
-    ##               logl -18425.32
-    ##  unrestricted.logl -18423.40
-    ##      baseline.logl -21018.71
+    ##               logl -84797.63
+    ##  unrestricted.logl -84797.63
+    ##      baseline.logl -97894.55
     ##               nvar         6
     ##               nobs        27
-    ##               npar        25
-    ##                 df         2
-    ##          objective      2.57
-    ##              chisq      3.83
-    ##             pvalue      0.15
-    ##     baseline.chisq   5190.60
+    ##               npar        27
+    ##                 df       ~ 0
+    ##          objective      2.59
+    ##              chisq       ~ 0
+    ##             pvalue         1
+    ##     baseline.chisq  26193.85
     ##      baseline.npar        12
     ##        baseline.df        15
     ##    baseline.pvalue       ~ 0
-    ##                nfi       1.0
-    ##               pnfi      0.13
-    ##                tli       1.0
-    ##               nnfi       1.0
-    ##                rfi      0.99
-    ##                ifi       1.0
-    ##                rni       1.0
-    ##                cfi       1.0
-    ##              rmsea     0.018
+    ##                nfi         1
+    ##               pnfi       ~ 0
+    ##                tli          
+    ##               nnfi         1
+    ##                rfi          
+    ##                ifi         1
+    ##                rni         1
+    ##                cfi         1
+    ##              rmsea          
     ##     rmsea.ci.lower       ~ 0
-    ##     rmsea.ci.upper     0.046
-    ##       rmsea.pvalue      0.97
-    ##             aic.ll  36900.64
-    ##            aic.ll2  36901.12
-    ##              aic.x     -0.17
-    ##             aic.x2     53.83
-    ##                bic  37048.26
-    ##               bic2  36968.83
-    ##            ebic.25  37093.06
-    ##             ebic.5  37137.85
-    ##            ebic.75  37173.69
-    ##              ebic1  37227.44
+    ##     rmsea.ci.upper       ~ 0
+    ##       rmsea.pvalue       ~ 0
+    ##             aic.ll 169649.26
+    ##            aic.ll2 169649.38
+    ##              aic.x       ~ 0
+    ##             aic.x2        54
+    ##                bic 169849.87
+    ##               bic2 169764.07
+    ##            ebic.25 169898.25
+    ##             ebic.5 169946.63
+    ##            ebic.75 169985.33
+    ##              ebic1 170043.38
 
 ``` r
 # Compare the models
@@ -306,12 +311,12 @@ comparison <- psychonetrics::compare(
 print(comparison)
 ```
 
-    ##                          model DF      AIC      BIC RMSEA Chisq Chisq_diff
-    ##              1. Original model  0 36900.81 37060.24         ~ 0           
-    ##  2. Sparse Model: Only Pruning  2 36900.64 37048.26 0.018  3.83       3.83
+    ##                          model DF       AIC       BIC RMSEA Chisq Chisq_diff
+    ##              1. Original model  0 169649.26 169849.87         ~ 0           
+    ##  2. Sparse Model: Only Pruning  0 169649.26 169849.87         ~ 0        ~ 0
     ##  DF_diff p_value
     ##                 
-    ##        2    0.15
+    ##        0       1
     ## 
     ## Note: Chi-square difference test assumes models are nested.
 
@@ -351,7 +356,7 @@ bootEGA1$EGA
 
     ## Model: GLASSO (EBIC with gamma = 0.5)
     ## Correlations: cor_auto
-    ## Lambda: 0.0770205025664863 (n = 100, ratio = 0.1)
+    ## Lambda: 0.0744050586187611 (n = 100, ratio = 0.1)
     ## 
     ## Number of nodes: 6
     ## Number of edges: 13
@@ -359,7 +364,7 @@ bootEGA1$EGA
     ## 
     ## Non-zero edge weights: 
     ##      M    SD    Min   Max
-    ##  0.115 0.230 -0.189 0.542
+    ##  0.112 0.229 -0.180 0.540
     ## 
     ## ----
     ## 
@@ -403,12 +408,12 @@ dim_scr$dimension.stability
 ```
 
     ## $structural.consistency
-    ##     1 
-    ## 0.988 
+    ## 1 
+    ## 1 
     ## 
     ## $average.item.stability
-    ##     1 
-    ## 0.996
+    ## 1 
+    ## 1
 
 ``` r
 # Item stability results
@@ -421,7 +426,7 @@ dim_scr$item.stability
     ## Proportion Replicated in Dimensions:
     ## 
     ## ASBR08A ASBR08B ASBR08C ASBR08D ASBR08E ASBR08F 
-    ##   0.988   0.988   1.000   1.000   1.000   1.000
+    ##       1       1       1       1       1       1
 
 ``` r
 dim_scr$item.stability$plot # to see only the plot
@@ -455,6 +460,25 @@ riEGA <- EGAnet::bootEGA(
 
 ![](network_files/figure-gfm/ch8-1.png)<!-- -->
 
+``` r
+print(riEGA)
+```
+
+    ## Model: GLASSO (EBIC)
+    ## Correlations: cor_auto
+    ## Algorithm:  Leading Eigenvector
+    ## Unidimensional Method:  Leading Eigenvector
+    ## 
+    ## ----
+    ## 
+    ## EGA Type: riEGA 
+    ## Bootstrap Samples: 500 (Parametric)
+    ##              
+    ##             1
+    ## Frequency:  1
+    ## 
+    ## Median dimensions: 1 [1, 1] 95% CI
+
 # Network Tree Analysis
 
 In the final step, we will analyze whether the network structure of the
@@ -462,22 +486,22 @@ SCR scale differs by gender and reading achievement (i.e., above or
 below the mean reading achievement score) using network tree analysis.
 
 ``` r
-scr2 <- dplyr::select(scr_canada, starts_with("ASBR08"), ITSEX, ASRREA01) %>%
+scr2 <- dplyr::select(scr_canada, starts_with("ASBR08"), IDCNTRY, ITSEX, ASRREA01) %>%
   dplyr::filter_all(all_vars(!is.na(.))) %>%
   dplyr::mutate_all(~na_if(., 9)) %>%
   dplyr::mutate(gender = as.factor(ifelse(ITSEX==1,"girl", 
                                           ifelse(scr_canada$ITSEX==2, "boy", NA))),
-                reading = as.factor(ifelse(ASRREA01 < 500, "below average", "above average"))) %>%
-  dplyr::select(-ITSEX, ASRREA01) %>%
+                reading = as.factor(ifelse(ASRREA01 < 500, "below average", "above average")),
+                province = as.factor(ifelse(IDCNTRY == 9130, "Newfoundland and Labrador", ifelse(IDCNTRY == 9133, "Quebec", ifelse(IDCNTRY == 9134, "Alberta", "British Columbia"))))) %>%
   as.data.frame()
 
 
 nmt_scr <- networktree::networktree(nodevars=scr, 
-                                    splitvars=scr2[,c("gender", "reading")],
+                                    splitvars=scr2[,c("gender", "reading", "province")],
                                     transform="pcor",
                                     na.action=na.omit)
 
-plot_scr <- plot(nmt_scr, transform="pcor", maximum=0.2, edge.width=5, vsize=12, theme="colorblind", tnex = 3, partyargs=list(ep_args = list(justmin = 15), gp = grid::gpar(cex = .6)))
+plot_scr <- plot(nmt_scr, transform="pcor", maximum=0.2, edge.width=5, vsize=10, theme="colorblind", tnex = 3, partyargs=list(ep_args = list(justmin = 15), gp = grid::gpar(cex = .5)))
 ```
 
 ![](network_files/figure-gfm/ch9-1.png)<!-- -->

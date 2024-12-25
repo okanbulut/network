@@ -48,8 +48,10 @@ library("networktree")
 
 # Student Confident in Reading (SCR) in PIRLS 2021 
 
+The dataset comes from the PIRLS website (<https://pirls2021.org/data/>).
+
 ```{r ch2}
-# Students from Alberta, Canada
+# Students from four provinces in Canada
 scr_canada <- read.csv("scr_canada.csv", header = TRUE)
 
 # First 6 rows of the data
@@ -121,7 +123,7 @@ We can prune this model to remove insignificant edges.
 ```{r ch6}
 network3 <- psychonetrics::ggm(scr, vars = obsvars) %>%
   psychonetrics::runmodel() %>%
-  psychonetrics::prune(adjust = "fdr", alpha = 0.05)
+  psychonetrics::prune(adjust = "BH", alpha = 0.05)
 
 # View the model parameters
 network3 %>% psychonetrics::parameters()
@@ -195,6 +197,8 @@ riEGA <- EGAnet::bootEGA(
   algorithm="walktrap",
   seed = 2024
 )
+
+print(riEGA)
 ```
 
 # Network Tree Analysis
@@ -202,21 +206,21 @@ riEGA <- EGAnet::bootEGA(
 In the final step, we will analyze whether the network structure of the SCR scale differs by gender and reading achievement (i.e., above or below the mean reading achievement score) using network tree analysis. 
 
 ```{r ch9}
-scr2 <- dplyr::select(scr_canada, starts_with("ASBR08"), ITSEX, ASRREA01) %>%
+scr2 <- dplyr::select(scr_canada, starts_with("ASBR08"), IDCNTRY, ITSEX, ASRREA01) %>%
   dplyr::filter_all(all_vars(!is.na(.))) %>%
   dplyr::mutate_all(~na_if(., 9)) %>%
   dplyr::mutate(gender = as.factor(ifelse(ITSEX==1,"girl", 
                                           ifelse(scr_canada$ITSEX==2, "boy", NA))),
-                reading = as.factor(ifelse(ASRREA01 < 500, "below average", "above average"))) %>%
-  dplyr::select(-ITSEX, ASRREA01) %>%
+                reading = as.factor(ifelse(ASRREA01 < 500, "below average", "above average")),
+                province = as.factor(ifelse(IDCNTRY == 9130, "Newfoundland and Labrador", ifelse(IDCNTRY == 9133, "Quebec", ifelse(IDCNTRY == 9134, "Alberta", "British Columbia"))))) %>%
   as.data.frame()
 
 
 nmt_scr <- networktree::networktree(nodevars=scr, 
-                                    splitvars=scr2[,c("gender", "reading")],
+                                    splitvars=scr2[,c("gender", "reading", "province")],
                                     transform="pcor",
                                     na.action=na.omit)
 
-plot_scr <- plot(nmt_scr, transform="pcor", maximum=0.2, edge.width=5, vsize=12, theme="colorblind", tnex = 3, partyargs=list(ep_args = list(justmin = 15), gp = grid::gpar(cex = .6)))
+plot_scr <- plot(nmt_scr, transform="pcor", maximum=0.2, edge.width=5, vsize=10, theme="colorblind", tnex = 3, partyargs=list(ep_args = list(justmin = 15), gp = grid::gpar(cex = .5)))
 ```
 
